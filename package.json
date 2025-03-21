@@ -1,0 +1,29 @@
+{
+  "name": "fetchmailmgr",
+  "version": "0.1.0",
+  "description": "fetchmailmgr is a bridge between fetchmail and docker-mailserver",
+  "main": "src/index.js",
+  "type": "module",
+  "dependencies": {
+    "commander": "^13.1.0",
+    "redis": "^4.7.0"
+  },
+  "scripts": {
+    "test": "exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/jeboehm/fetchmailmgr.git"
+  },
+  "keywords": [
+    "docker-mailserver",
+    "fetchmail",
+    "getmail"
+  ],
+  "author": "Jeffrey Boehm",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jeboehm/fetchmailmgr/issues"
+  },
+  "homepage": "https://github.com/jeboehm/fetchmailmgr#readme"
+}
