@@ -5,9 +5,9 @@
   "main": "src/index.js",
   "type": "module",
   "dependencies": {
+    "commander": "^13.1.0",
     "redis": "^4.7.0"
   },
-  "devDependencies": {},
   "scripts": {
     "test": "exit 1"
   },

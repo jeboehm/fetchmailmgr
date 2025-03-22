@@ -19,6 +19,11 @@ ENV NODE_ENV=production \
     MTA_HOST=mta \
     FETCHMAIL_PATH=/usr/bin/fetchmail
 
+RUN apt-get update && \
+    apt-get install -y fetchmail && \
+    apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
 RUN mkdir -p "${TEMP_DIR}" && \
     chown nobody:nogroup "${TEMP_DIR}"
 
@@ -28,4 +33,5 @@ COPY --from=build /app /app
 USER nobody
 VOLUME /run/fetchmailmgr
 
-CMD ["node", "index.js"]
+ENTRYPOINT ["node", "index.js"]
+CMD []

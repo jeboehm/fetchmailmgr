@@ -2,6 +2,7 @@ import {connect as connectRedis} from './redisconnection.js';
 import {getAccounts} from './accounts.js';
 import {sync as syncConfig} from './config.js';
 import {startProcess} from "./runtime.js";
+import * as commander from 'commander';
 
 const loop = async () => {
     const accounts = await getAccounts();
@@ -11,11 +12,12 @@ const loop = async () => {
         return;
     }
 
-    syncConfig(accounts);
+    accounts.forEach(account => {
+        console.info(`Account ${account.id} found`);
+        syncConfig(account);
 
-    for (const account of accounts) {
-        startProcess(account).then();
-    }
+        startProcess(account);
+    });
 }
 
 const main = async () => {
@@ -23,6 +25,20 @@ const main = async () => {
 
     await loop();
 }
+
+process.on('SIGINT', function () {
+    console.log("Caught interrupt signal");
+
+    process.exit();
+});
+
+
+const program = new commander.Command();
+program.version('1.0.0');
+
+program.description('fetchmailmgr is a bridge between fetchmail and docker-mailserver');
+program.parse(process.argv);
+process.signal
 
 try {
     console.info('Starting fetchmailmgr');

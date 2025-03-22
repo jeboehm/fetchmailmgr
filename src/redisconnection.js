@@ -1,17 +1,15 @@
 import {createClient} from "redis";
 
-const redisHost = process.env.REDIS_HOST;
-const redisPort = process.env.REDIS_PORT;
-const redisPassword = process.env.REDIS_PASSWORD;
+const redisUrl = process.env.REDIS_URL;
 
 const client = createClient({
-    host: redisHost, port: redisPort, password: redisPassword,
+    url: redisUrl
 });
 
 client.on("error", (error) => {
     console.error(`Error in redis connection: ${error}`);
 
-    process.exit(1);
+    throw error;
 });
 
 const connect = async () => {
@@ -20,7 +18,7 @@ const connect = async () => {
     } catch (error) {
         console.error(`Error in redis connection: ${error}`);
 
-        process.exit(1);
+        throw error;
     }
 }
 

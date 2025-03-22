@@ -1,25 +1,19 @@
 import fs from 'fs';
+import path from 'path';
 
 const tempDir = process.env.TEMP_DIR || '/tmp';
 const mtaHost = process.env.MTA_HOST || 'localhost';
 
-const getPath = (accountId) => {
-    return `${tempDir}/${accountId}`;
+export const getPath = (accountId) => {
+    return path.join(tempDir, accountId.toString());
 }
 
-const read = async (accountId) => {
-    const path = getPath(accountId);
-    return fs.readFile(path, {
-        encoding: 'utf-8'
-    });
-}
-
-const write = async (accountId, data) => {
-    const path = getPath(accountId);
-
-    await fs.writeFile(path, data);
-
-    console.debug('Wrote config for account', accountId, path);
+export const getConfigPath = (accountId) => {
+    return path.join(
+        tempDir,
+        accountId.toString(),
+        '.fetchmailrc',
+    );
 }
 
 const template = (account) => {
@@ -33,44 +27,58 @@ const template = (account) => {
         options.push('sslcertck');
     }
 
-    if (account.keep) {
-        options.push('keep');
-    }
-
     return `
-    poll ${account.host} with proto ${account.protocol} port ${account.port}
-      user ${account.username} there with password "${account.password}" is fetchmail here ${options.join(' ')}
+    set no spambounce
+    poll ${account.host} with protocol ${account.protocol.toUpperCase()} port ${account.port}
+      user ${account.username} there with password "${account.password}" is fetchmail here options ${options.join(' ')}
       smtphost ${mtaHost}
       smtpname ${account.user}
     `;
 };
 
-const sync = (accounts) => {
-    accounts.forEach(account => {
-        fs.readFile(getPath(account.id), (err, data) => {
-            if (data === template(account)) {
-                return;
-            }
+const readFile = (account) => {
+    const path = getConfigPath(account.id);
 
-            return fs.writeFile(getPath(account.id), template(account), (err) => {
-                if (err) {
-                    console.error('Error writing config for account', account.id, err);
-                    throw err;
-                }
+    if (fs.existsSync(path)) {
+        return fs.readFileSync(path, 'utf8');
+    }
 
-                fs.chmod(getPath(account.id), 0o600, (err) => {
-                    if (err) {
-                        console.error('Error setting permissions on config for account', account.id, err);
-                        throw err;
-                    }
-                });
-
-                console.debug('Wrote config for account', account.id);
-            });
-        });
-    })
+    return null;
 };
 
-export {
-    sync
-}
+const writeFile = (account, data) => {
+    const folder = getPath(account.id);
+
+    if (!fs.existsSync(folder)) {
+        fs.mkdirSync(folder, {recursive: true});
+    }
+
+    const path = getConfigPath(account.id);
+
+    fs.writeFileSync(path, data, (err) => {
+        if (err) {
+            console.error('Error writing config for account', account.id, err);
+            throw err;
+        }
+
+        console.debug('Wrote config for account', account.id);
+    });
+
+    try {
+        fs.chmodSync(path, 0o600);
+    } catch (err) {
+        console.error('Error changing permissions for config', path, err);
+        throw err;
+    }
+};
+
+export const sync = (account) => {
+    const currentData = readFile(account);
+    const newData = template(account);
+
+    if (currentData === newData) {
+        return;
+    }
+
+    writeFile(account, newData);
+};
