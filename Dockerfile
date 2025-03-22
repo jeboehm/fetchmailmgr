@@ -1,5 +1,5 @@
 # Stage 1
-FROM node:lts AS build
+FROM node:lts-alpine AS build
 WORKDIR /app
 ENV NODE_ENV=production
 
@@ -9,7 +9,7 @@ RUN npm install
 COPY src/ .
 
 # Stage 2
-FROM node:lts AS app
+FROM node:lts-alpine AS app
 
 ENV NODE_ENV=production \
     REDIS_HOST=redis \
@@ -19,10 +19,7 @@ ENV NODE_ENV=production \
     MTA_HOST=mta \
     FETCHMAIL_PATH=/usr/bin/fetchmail
 
-RUN apt-get update && \
-    apt-get install -y fetchmail && \
-    apt-get clean && \
-    rm -rf /var/lib/apt/lists/*
+RUN apk add --no-cache fetchmail=6.5.1-r0
 
 RUN mkdir -p "${TEMP_DIR}" && \
     chown nobody:nogroup "${TEMP_DIR}"
