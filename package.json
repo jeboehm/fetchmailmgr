@@ -25,5 +25,8 @@
   "bugs": {
     "url": "https://github.com/jeboehm/fetchmailmgr/issues"
   },
-  "homepage": "https://github.com/jeboehm/fetchmailmgr#readme"
+  "homepage": "https://github.com/jeboehm/fetchmailmgr#readme",
+  "devDependencies": {
+    "prettier": "^3.5.3"
+  }
 }
