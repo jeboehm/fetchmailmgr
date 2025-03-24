@@ -12,9 +12,7 @@ COPY src/ .
 FROM node:lts-alpine AS app
 
 ENV NODE_ENV=production \
-    REDIS_HOST=redis \
-    REDIS_PORT=6379 \
-    REDIS_PASSWORD="" \
+    REDIS_URL=redis://localhost:6379 \
     TEMP_DIR=/run/fetchmailmgr \
     MTA_HOST=mta \
     FETCHMAIL_PATH=/usr/bin/fetchmail
