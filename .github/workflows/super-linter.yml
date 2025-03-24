@@ -8,6 +8,11 @@ on:
 jobs:
   run-lint:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      statuses: write
+
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
@@ -17,7 +22,4 @@ jobs:
       - name: Lint Code Base
         uses: github/super-linter@v7
         env:
-          VALIDATE_ALL_CODEBASE: false
-          DEFAULT_BRANCH: "main"
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          VALIDATE_SQLFLUFF: false
