@@ -1,27 +1,29 @@
 ---
-
 name: Run tests
-
 on:
   pull_request:
-
 jobs:
   test:
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
-
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 22
-
       - name: Start Redis
         uses: supercharge/redis-github-action@1.7.0
         with:
           redis-version: 7.0
-
       - name: Install dependencies
         run: npm install
+
+      - name: Check prettier
+        run: npx prettier --check src/
+
+      - name: Run tests
+        run: npm test
+        env:
+          CI: true
+          REDIS_URL: redis://localhost:6379/0
