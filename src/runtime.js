@@ -1,9 +1,10 @@
-import { exec } from "node:child_process";
-import { client } from "./redisconnection.js";
-import { getPath, getConfigPath } from "./config.js";
+import { exec } from 'node:child_process';
+import { client } from './redisconnection.js';
+import { getConfigPath, getPath } from './config.js';
+import { state } from './app.js';
 
-const fetchmailPath = process.env.FETCHMAIL_PATH || "/usr/bin/fetchmail";
-const args = ["-N", "--nosyslog"];
+const fetchmailPath = process.env.FETCHMAIL_PATH || '/usr/bin/fetchmail';
+const args = ['-N', '--nosyslog'];
 
 const writeRuntimeInfo = async (accountId, lastRun, lastLog, isSuccess) => {
   const key = `fetchmail_accounts_runtime_${accountId}`;
@@ -18,12 +19,12 @@ const writeRuntimeInfo = async (accountId, lastRun, lastLog, isSuccess) => {
 
 export const startProcess = async (account) => {
   const fetchmailHome = getPath(account.id);
-  let stdout = "";
-  let stderr = "";
+  let stdout = '';
+  let stderr = '';
 
   try {
     const process = exec(
-      `"${fetchmailPath}" ${args.join(" ")} --fetchmailrc "${getConfigPath(account.id)}"`,
+      `"${fetchmailPath}" ${args.join(' ')} --fetchmailrc "${getConfigPath(account.id)}"`,
       {
         env: {
           HOME: fetchmailHome,
@@ -32,23 +33,25 @@ export const startProcess = async (account) => {
         timeout: 600000,
       },
     );
+    state.processesRunning++;
 
-    process.stdout.on("data", (data) => {
+    process.stdout.on('data', (data) => {
       stdout += data;
     });
 
-    process.stderr.on("data", (data) => {
+    process.stderr.on('data', (data) => {
       stderr += data;
     });
 
-    process.on("close", (code) => {
+    process.on('close', async (code) => {
       console.debug(
         `[${account.id}] Process for account ${account.id} ended with code ${code}`,
       );
       console.debug(`[${account.id}] stdout:`, stdout);
       console.debug(`[${account.id}] stderr:`, stderr);
 
-      writeRuntimeInfo(
+      state.processesRunning--;
+      await writeRuntimeInfo(
         account.id,
         new Date().toISOString(),
         stdout + stderr,
@@ -57,6 +60,13 @@ export const startProcess = async (account) => {
     });
   } catch (err) {
     console.error(`[${account.id}] Error starting process:`, err);
-    writeRuntimeInfo(account.id, new Date().toISOString(), err.message, false);
+    state.processesRunning--;
+
+    await writeRuntimeInfo(
+      account.id,
+      new Date().toISOString(),
+      err.message,
+      false,
+    );
   }
 };

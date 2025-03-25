@@ -1,12 +1,12 @@
-import { createClient } from "redis";
+import { createClient } from 'redis';
 
-const redisUrl = process.env.REDIS_URL || "redis://localhost:6379";
+const redisUrl = process.env.REDIS_URL || 'redis://localhost:6379';
 
 const client = createClient({
   url: redisUrl,
 });
 
-client.on("error", (error) => {
+client.on('error', (error) => {
   console.error(`Error in redis connection: ${error}`);
 
   throw error;
