@@ -1,0 +1,14 @@
+services:
+  fetchmailmgr:
+    image: jeboehm/fetchmailmgr:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    read_only: true
+    ports:
+      - 3000:3000
+    environment:
+      REDIS_URL: redis://redis:6379/0
+
+  redis:
+    image: redis:7-alpine

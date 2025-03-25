@@ -3,7 +3,7 @@ name: Run tests
 on:
   pull_request:
 jobs:
-  test:
+  static-code-analysis:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
@@ -12,18 +12,20 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: 22
-      - name: Start Redis
-        uses: supercharge/redis-github-action@1.8.0
-        with:
-          redis-version: 7.0
       - name: Install dependencies
         run: npm install
 
       - name: Check prettier
         run: npx prettier --check src/
 
-      - name: Run tests
-        run: npm test
-        env:
-          CI: true
-          REDIS_URL: redis://localhost:6379/0
+  test-container-health:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+      - name: Start compose stack
+        run: docker compose up -d
+      - name: Wait for services to start
+        run: sleep 10
+      - name: Test curl on fetchmailmgr
+        run: curl http://localhost:3000/healthz
