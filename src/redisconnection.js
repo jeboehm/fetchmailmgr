@@ -1,52 +1,52 @@
-import { createClient } from 'redis';
+import { createClient } from 'redis'
 
 const buildDsn = (config) => {
-  const { host, port, password, db } = config;
+  const { host, port, password, db } = config
 
-  let dsn = `redis://${host}:${port}`;
+  let dsn = `redis://${host}:${port}`
 
   if (password) {
-    dsn = `redis://:${password}@${host}:${port}`;
+    dsn = `redis://:${password}@${host}:${port}`
   }
 
   if (db) {
-    dsn = `${dsn}/${db}`;
+    dsn = `${dsn}/${db}`
   }
 
-  return dsn;
-};
+  return dsn
+}
 
-let redisUrl;
+let redisUrl
 
 if (process.env.REDIS_HOST && process.env.REDIS_PORT) {
   redisUrl = buildDsn({
     host: process.env.REDIS_HOST,
     port: process.env.REDIS_PORT,
     password: process.env.REDIS_PASSWORD,
-    db: process.env.REDIS_DB,
-  });
+    db: process.env.REDIS_DB
+  })
 } else {
-  redisUrl = process.env.REDIS_URL;
+  redisUrl = process.env.REDIS_URL
 }
 
 const client = createClient({
-  url: redisUrl,
-});
+  url: redisUrl
+})
 
 client.on('error', (error) => {
-  console.error(`Error in redis connection: ${error}`);
+  console.error(`Error in redis connection: ${error}`)
 
-  throw error;
-});
+  throw error
+})
 
 const connect = async () => {
   try {
-    return client.connect();
+    return client.connect()
   } catch (error) {
-    console.error(`Error in redis connection: ${error}`);
+    console.error(`Error in redis connection: ${error}`)
 
-    throw error;
+    throw error
   }
-};
+}
 
-export { client, connect };
+export { client, connect }
