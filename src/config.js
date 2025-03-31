@@ -1,15 +1,15 @@
 import fs from 'fs';
 import path from 'path';
 
-const tempDir = process.env.TEMP_DIR || '/tmp';
-const mtaHost = process.env.MTA_HOST || 'localhost';
+const TEMP_DIR = process.env.TEMP_DIR || '/tmp';
+const MTA_HOST = process.env.MTA_HOST || 'localhost';
 
 export const getPath = (accountId) => {
-  return path.join(tempDir, accountId.toString());
+  return path.join(TEMP_DIR, accountId.toString());
 };
 
 export const getConfigPath = (accountId) => {
-  return path.join(tempDir, accountId.toString(), '.fetchmailrc');
+  return path.join(TEMP_DIR, accountId.toString(), '.fetchmailrc');
 };
 
 const template = (account) => {
@@ -27,7 +27,7 @@ const template = (account) => {
     set no spambounce
     poll ${account.host} with protocol ${account.protocol.toUpperCase()} port ${account.port}
       user ${account.username} there with password "${account.password}" is fetchmail here options ${options.join(' ')}
-      smtphost ${mtaHost}
+      smtphost ${MTA_HOST}
       smtpname ${account.user}
     `;
 };
@@ -53,17 +53,21 @@ const writeFile = (account, data) => {
 
   fs.writeFileSync(path, data, (err) => {
     if (err) {
-      console.error('Error writing config for account', account.id, err);
+      console.error(`[${account.id}] Error writing config for account`, err);
       throw err;
     }
 
-    console.debug('Wrote config for account', account.id);
+    console.debug(`[${account.id}] Successfully wrote config for account`);
   });
 
   try {
     fs.chmodSync(path, 0o600);
   } catch (err) {
-    console.error('Error changing permissions for config', path, err);
+    console.error(
+      `[${account.id}] Error changing permissions for config`,
+      path,
+      err,
+    );
     throw err;
   }
 };

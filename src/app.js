@@ -2,7 +2,7 @@ import { getAccounts } from './accounts.js';
 import { sync as syncConfig } from './config.js';
 import { startProcess } from './runtime.js';
 
-const maxProcessEndWait = 10;
+const MAX_PROCESS_END_WAIT = 10; // seconds
 
 export const state = {
   processesRunning: 0,
@@ -19,11 +19,9 @@ export const loop = async () => {
     return;
   }
 
-  console.info('Starting fetchmail for all accounts...');
+  console.info(`Running fetchmail loop over ${accounts.length} accounts`);
 
   accounts.forEach((account) => {
-    console.debug(`[${account.id}]: starting fetchmail...`);
-
     syncConfig(account);
     startProcess(account);
   });
@@ -38,12 +36,12 @@ export const exit = (withError = false, tries = 1) => {
     process.exit(withError ? 1 : 0);
   } else {
     console.info(
-      `Waiting for processes to finish... (tries: ${tries}/${maxProcessEndWait})`,
+      `Waiting for processes to finish... (tries: ${tries}/${MAX_PROCESS_END_WAIT})`,
     );
     tries++;
 
-    if (tries > maxProcessEndWait) {
-      console.error('Processes did not finish in time');
+    if (tries > MAX_PROCESS_END_WAIT) {
+      console.error('Processes did not finish in time, force quitting...');
       process.exit(1);
     }
 

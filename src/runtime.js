@@ -3,10 +3,11 @@ import { client } from './redisconnection.js';
 import { getConfigPath, getPath } from './config.js';
 import { state } from './app.js';
 
-const fetchmailPath = process.env.FETCHMAIL_PATH || '/usr/bin/fetchmail';
-const args = ['-N', '--nosyslog'];
+const FETCHMAIL_PATH = process.env.FETCHMAIL_PATH || '/usr/bin/fetchmail';
+const FETCHMAIL_ARGS = ['-N', '--nosyslog'];
+const PROCESS_TIMEOUT = 600000;
 
-const writeRuntimeInfo = async (accountId, lastRun, lastLog, isSuccess) => {
+const saveFetchmailResult = async (accountId, lastRun, lastLog, isSuccess) => {
   const key = `fetchmail_accounts_runtime_${accountId}`;
   const value = JSON.stringify({
     lastRun,
@@ -17,23 +18,38 @@ const writeRuntimeInfo = async (accountId, lastRun, lastLog, isSuccess) => {
   await client.set(key, value);
 };
 
+const saveFetchmailRunning = async (accountId, isRunning) => {
+  const key = `fetchmail_accounts_running_${accountId}`;
+
+  if (!isRunning) {
+    await client.del(key);
+
+    return;
+  }
+
+  await client.set(key, isRunning ? '1' : '0', {
+    EX: PROCESS_TIMEOUT / 1000,
+  });
+};
+
 export const startProcess = async (account) => {
   const fetchmailHome = getPath(account.id);
   let stdout = '';
   let stderr = '';
+  state.processesRunning++;
+  await saveFetchmailRunning(account.id, true);
 
   try {
     const process = exec(
-      `"${fetchmailPath}" ${args.join(' ')} --fetchmailrc "${getConfigPath(account.id)}"`,
+      `"${FETCHMAIL_PATH}" ${FETCHMAIL_ARGS.join(' ')} --fetchmailrc "${getConfigPath(account.id)}"`,
       {
         env: {
           HOME: fetchmailHome,
           FETCHMAILHOME: fetchmailHome,
         },
-        timeout: 600000,
+        timeout: PROCESS_TIMEOUT,
       },
     );
-    state.processesRunning++;
 
     process.stdout.on('data', (data) => {
       stdout += data;
@@ -44,29 +60,36 @@ export const startProcess = async (account) => {
     });
 
     process.on('close', async (code) => {
-      console.debug(
-        `[${account.id}] Process for account ${account.id} ended with code ${code}`,
-      );
-      console.debug(`[${account.id}] stdout:`, stdout);
-      console.debug(`[${account.id}] stderr:`, stderr);
+      let hasError = code > 1;
 
-      state.processesRunning--;
-      await writeRuntimeInfo(
+      ['debug', 'error'].map((level) => {
+        if (level === 'debug' || hasError) {
+          console[level](
+            `[${account.id}] Process for account ${account.id} ended with code ${code}`,
+          );
+          console[level](`[${account.id}] stdout:`, stdout);
+          console[level](`[${account.id}] stderr:`, stderr);
+        }
+      });
+
+      await saveFetchmailResult(
         account.id,
         new Date().toISOString(),
         stdout + stderr,
-        code <= 1,
+        !hasError,
       );
     });
   } catch (err) {
     console.error(`[${account.id}] Error starting process:`, err);
-    state.processesRunning--;
 
-    await writeRuntimeInfo(
+    await saveFetchmailResult(
       account.id,
       new Date().toISOString(),
       err.message,
       false,
     );
   }
+
+  state.processesRunning--;
+  await saveFetchmailRunning(account.id, false);
 };

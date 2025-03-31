@@ -46,18 +46,40 @@ The `account` object has the following properties:
 ### Example of the `fetchmail_accounts` key in Redis:
 
 ```json
-[{
-  id: 1,
-  host: 'mail.example.com',
-  protocol: 'IMAP',
-  port: 993,
-  username: 'user@example.com',
-  password: 'password123',
-  ssl: true,
-  verifySsl: true,
-  user: 'localuser'
-}]
+[
+  {
+    "id": 1,
+    "host": "mail.example.com",
+    "protocol": "IMAP",
+    "port": 993,
+    "username": "user@example.com",
+    "password": "password123",
+    "ssl": true,
+    "verifySsl": true,
+    "user": "localuser"
+  }
+]
 ```
+
+## Development
+
+To add a prefilled `fetchmail_accounts` key to Redis using `docker compose`, follow these steps:
+
+Start the services:
+
+```bash
+docker-compose up
+```
+
+Prefill the fetchmail_accounts key in Redis:
+
+```bash
+docker-compose exec redis redis-cli \
+  SET fetchmail_accounts '[{"id":1,"host":"mail.example.com","protocol":"IMAP","port":993,"username":"user@example.com","password":"password123","ssl":true,"verifySsl":true,"user":"localuser"}]'
+```
+
+These commands will start the services and set the `fetchmail_accounts` key in Redis with the specified data.
+This will put fetchmailmgr in a state where it will fetch emails from the specified email account.
 
 ## Links
 
