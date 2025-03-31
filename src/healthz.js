@@ -19,5 +19,5 @@ export const startServer = async (host, port) => {
     host,
   });
 
-  console.info(`Server listening on ${fastify.server.address().port}`);
+  console.info(`Healthz Server listening on ${fastify.server.address().port}`);
 };

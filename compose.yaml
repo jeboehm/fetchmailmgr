@@ -1,6 +1,6 @@
 services:
   fetchmailmgr:
-    image: jeboehm/fetchmailmgr:latest
+    image: ghcr.io/jeboehm/fetchmailmgr:latest
     build:
       context: .
       dockerfile: Dockerfile
@@ -9,6 +9,9 @@ services:
       - 3000:3000
     environment:
       REDIS_URL: redis://redis:6379/0
+      DEBUG: 'true'
+    volumes:
+      - ./src:/app/src:ro
 
   redis:
     image: redis:7-alpine

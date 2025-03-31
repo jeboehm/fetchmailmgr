@@ -6,7 +6,7 @@ ENV NODE_ENV=production
 COPY package*.json ./
 RUN npm install
 
-COPY src/ .
+COPY src ./src
 
 # Stage 2
 FROM node:lts-alpine AS app
@@ -31,5 +31,5 @@ EXPOSE 3000
 
 HEALTHCHECK --interval=30s --timeout=5s --start-period=5s --retries=3 \
     CMD wget -qO- http://0.0.0.0:3000/healthz || exit 1
-ENTRYPOINT ["node", "index.js"]
+ENTRYPOINT ["node", "src/index.js"]
 CMD []
