@@ -2,6 +2,7 @@ import { connect as connectRedis } from './redisconnection.js'
 import * as commander from 'commander'
 import { startServer } from './healthz.js'
 import { exit, loop, state } from './app.js'
+import { DEBUG } from './env.js'
 
 const createProcessListeners = () => {
   process.on('SIGINT', function () {
@@ -66,7 +67,7 @@ const program = setupCommander()
 const options = program.opts()
 
 createProcessListeners()
-setupConsole(options.debug || process.env.DEBUG)
+setupConsole(options.debug || DEBUG)
 
 try {
   await main(options.server, options.port, options.interval)

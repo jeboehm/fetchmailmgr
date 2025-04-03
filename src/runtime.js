@@ -2,8 +2,8 @@ import { exec } from 'node:child_process'
 import { client } from './redisconnection.js'
 import { getConfigPath, getPath } from './config.js'
 import { state } from './app.js'
+import { FETCHMAIL_PATH } from './env.js'
 
-const FETCHMAIL_PATH = process.env.FETCHMAIL_PATH || '/usr/bin/fetchmail'
 const FETCHMAIL_ARGS = ['-N', '--nosyslog']
 const PROCESS_TIMEOUT = 600000
 
