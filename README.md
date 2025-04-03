@@ -1,5 +1,7 @@
 # fetchmailmgr
 
+[![Application tests](https://github.com/jeboehm/fetchmailmgr/actions/workflows/test.yml/badge.svg)](https://github.com/jeboehm/fetchmailmgr/actions/workflows/test.yml)
+
 `fetchmailmgr` is a bridge between `fetchmail` and `docker-mailserver`. It fetches emails from external mail providers and delivers them to
 the `docker-mailserver`. The configuration is managed by `mailserver-admin`, the management interface for `docker-mailserver`.
 
