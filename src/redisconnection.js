@@ -1,4 +1,5 @@
 import { createClient } from 'redis'
+import { REDIS_DB, REDIS_HOST, REDIS_PASSWORD, REDIS_PORT, REDIS_URL } from './env.js'
 
 const buildDsn = (config) => {
   const { host, port, password, db } = config
@@ -18,15 +19,15 @@ const buildDsn = (config) => {
 
 let redisUrl
 
-if (process.env.REDIS_HOST && process.env.REDIS_PORT) {
+if (REDIS_HOST && REDIS_PORT) {
   redisUrl = buildDsn({
-    host: process.env.REDIS_HOST,
-    port: process.env.REDIS_PORT,
-    password: process.env.REDIS_PASSWORD,
-    db: process.env.REDIS_DB
+    host: REDIS_HOST,
+    port: REDIS_PORT,
+    password: REDIS_PASSWORD,
+    db: REDIS_DB
   })
 } else {
-  redisUrl = process.env.REDIS_URL
+  redisUrl = REDIS_URL
 }
 
 const client = createClient({

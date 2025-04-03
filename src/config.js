@@ -1,8 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-
-const TEMP_DIR = process.env.TEMP_DIR || '/tmp'
-const MTA_HOST = process.env.MTA_HOST || 'localhost'
+import { MTA_HOST, TEMP_DIR } from './env.js'
 
 export const getPath = (accountId) => {
   return path.join(TEMP_DIR, accountId.toString())
@@ -24,7 +22,7 @@ const template = (account) => {
   }
 
   return `
-    set no spambounce
+    antispam 550
     poll ${account.host} with protocol ${account.protocol.toUpperCase()} port ${account.port}
       user ${account.username} there with password "${account.password}" is fetchmail here options ${options.join(' ')}
       smtphost ${MTA_HOST}
