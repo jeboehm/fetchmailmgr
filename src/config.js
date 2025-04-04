@@ -22,7 +22,8 @@ const template = (account) => {
   }
 
   return `
-    antispam 550
+    set no softbounce
+    set no bouncemail
     poll ${account.host} with protocol ${account.protocol.toUpperCase()} port ${account.port}
       user ${account.username} there with password "${account.password}" is fetchmail here options ${options.join(' ')}
       smtphost ${MTA_HOST}
