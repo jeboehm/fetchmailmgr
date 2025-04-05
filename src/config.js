@@ -20,7 +20,7 @@ const template = (account) => {
   if (account.verifySsl) {
     options.push('sslcertck')
   } else {
-    options.push('nosslcertck')
+    options.push('no sslcertck')
   }
 
   return `
