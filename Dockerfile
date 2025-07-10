@@ -17,7 +17,7 @@ ENV NODE_ENV=production \
     MTA_HOST=mta \
     FETCHMAIL_PATH=/usr/bin/fetchmail
 
-RUN apk add --no-cache fetchmail=6.5.1-r0
+RUN apk add --no-cache fetchmail
 
 RUN mkdir -p "${TEMP_DIR}" && \
     chown nobody:nogroup "${TEMP_DIR}"
