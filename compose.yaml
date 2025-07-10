@@ -17,4 +17,4 @@ services:
       - /run/fetchmailmgr:mode=0755,uid=65534,gid=65534
 
   redis:
-    image: redis:7-alpine
+    image: redis:7-alpine@sha256:0c0142c3cd69bc030ea09fecfa1c1c0c7d0e7d6081be6bb4957804f23d2cf57a

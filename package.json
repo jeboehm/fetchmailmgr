@@ -29,6 +29,6 @@
   },
   "homepage": "https://github.com/jeboehm/fetchmailmgr#readme",
   "devDependencies": {
-    "standard": "^17.1.2"
+    "standard": "17.1.2"
   }
 }
