@@ -16,7 +16,7 @@ jobs:
           # use this PAT to have other workflows triggered
           github_token: ${{ secrets.GH_RELEASE_PAT }}
       - name: Create a GitHub release
-        uses: ncipollo/release-action@bcfe5470707e8832e12347755757cec0eb3c22af # v1
+        uses: ncipollo/release-action@b7eabc95ff50cbeeedec83973935c8f306dfcd0b # v1
         with:
           tag: ${{ steps.tag_version.outputs.new_tag }}
           name: Release ${{ steps.tag_version.outputs.new_tag }}
