@@ -1,5 +1,5 @@
 # Stage 1
-FROM node:lts-alpine@sha256:d2166de198f26e17e5a442f537754dd616ab069c47cc57b889310a717e0abbf9 AS build
+FROM node:lts-alpine@sha256:cb3143549582cc5f74f26f0992cdef4a422b22128cb517f94173a5f910fa4ee7 AS build
 WORKDIR /app
 ENV NODE_ENV=production
 
@@ -9,7 +9,7 @@ RUN npm install
 COPY src ./src
 
 # Stage 2
-FROM node:lts-alpine@sha256:d2166de198f26e17e5a442f537754dd616ab069c47cc57b889310a717e0abbf9 AS app
+FROM node:lts-alpine@sha256:cb3143549582cc5f74f26f0992cdef4a422b22128cb517f94173a5f910fa4ee7 AS app
 
 ENV NODE_ENV=production \
     REDIS_URL=redis://localhost:6379 \
