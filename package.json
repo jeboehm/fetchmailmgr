@@ -32,7 +32,7 @@
   },
   "homepage": "https://github.com/jeboehm/fetchmailmgr#readme",
   "devDependencies": {
-    "jest": "^29.7.0",
+    "jest": "29.7.0",
     "standard": "17.1.2"
   }
 }
