@@ -10,8 +10,11 @@
   },
   "scripts": {
     "start": "node src/index.js",
-    "test": "standard",
-    "format": "standard --fix"
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest.js",
+    "test:watch": "node --experimental-vm-modules node_modules/jest/bin/jest.js --watch",
+    "test:coverage": "node --experimental-vm-modules node_modules/jest/bin/jest.js --coverage",
+    "lint": "standard src/ && standard --env jest tests/",
+    "csfix": "standard --fix src/ && standard --fix --env jest tests/"
   },
   "repository": {
     "type": "git",
@@ -29,6 +32,8 @@
   },
   "homepage": "https://github.com/jeboehm/fetchmailmgr#readme",
   "devDependencies": {
+    "jest": "^29.7.0",
+    "jest-preset-node": "^1.0.0",
     "standard": "17.1.2"
   }
 }

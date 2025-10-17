@@ -64,6 +64,24 @@ The `account` object has the following properties:
 ]
 ```
 
+## Testing
+
+The project includes a comprehensive test suite using Jest. To run the tests:
+
+```bash
+# Install dependencies
+npm install
+
+# Run all tests
+npm test
+
+# Run tests in watch mode
+npm run test:watch
+
+# Run tests with coverage report
+npm run test:coverage
+```
+
 ## Development
 
 To add a prefilled `fetchmail_accounts` key to Redis using `docker compose`, follow these steps:
