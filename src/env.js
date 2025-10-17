@@ -8,4 +8,5 @@ export const TEMP_DIR = process.env.TEMP_DIR || '/tmp'
 export const FETCHMAIL_SMTP_ADDRESS = process.env.FETCHMAIL_SMTP_ADDRESS?.replace(/:/g, '/') || (() => {
   throw new Error('FETCHMAIL_SMTP_ADDRESS environment variable is required')
 })()
+export const FETCHMAIL_USE_LMTP = process.env.FETCHMAIL_USE_LMTP === 'true'
 export const DEBUG = process.env.DEBUG
