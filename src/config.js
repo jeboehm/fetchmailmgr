@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { FETCHMAIL_SMTP_ADDRESS, TEMP_DIR } from './env.js'
+import { FETCHMAIL_SMTP_ADDRESS, FETCHMAIL_USE_LMTP, TEMP_DIR } from './env.js'
 
 export const getPath = (accountId) => {
   return path.join(TEMP_DIR, accountId.toString())
@@ -21,6 +21,10 @@ const template = (account) => {
     options.push('sslcertck')
   } else {
     options.push('no sslcertck')
+  }
+
+  if (FETCHMAIL_USE_LMTP) {
+    options.push('lmtp')
   }
 
   return `
