@@ -2,4 +2,3 @@ node_modules/
 compose.local.yaml
 coverage/
 *.log
-package-lock.json

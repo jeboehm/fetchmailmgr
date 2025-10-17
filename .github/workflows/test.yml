@@ -1,8 +1,11 @@
 name: Test application
 on:
   pull_request:
+concurrency:
+  group: "test-${{ github.ref }}"
+  cancel-in-progress: true
 jobs:
-  static-code-analysis:
+  test-application:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
