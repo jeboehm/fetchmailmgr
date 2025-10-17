@@ -1,6 +1,6 @@
 import fs from 'fs'
 import path from 'path'
-import { MTA_HOST, TEMP_DIR } from './env.js'
+import { FETCHMAIL_SMTP_ADDRESS, TEMP_DIR } from './env.js'
 
 export const getPath = (accountId) => {
   return path.join(TEMP_DIR, accountId.toString())
@@ -28,7 +28,7 @@ const template = (account) => {
     set no bouncemail
     poll ${account.host} with protocol ${account.protocol.toUpperCase()} port ${account.port}
       user ${account.username} there with password "${account.password}" is fetchmail here options ${options.join(' ')}
-      smtphost ${MTA_HOST}
+      smtphost ${FETCHMAIL_SMTP_ADDRESS}
       smtpname ${account.user}
     `
 }

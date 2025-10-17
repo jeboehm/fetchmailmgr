@@ -14,7 +14,7 @@ FROM node:lts-alpine@sha256:dbcedd8aeab47fbc0f4dd4bffa55b7c3c729a707875968d467aa
 ENV NODE_ENV=production \
     REDIS_URL=redis://localhost:6379 \
     TEMP_DIR=/run/fetchmailmgr \
-    MTA_HOST=mta \
+    FETCHMAIL_SMTP_ADDRESS=mta \
     FETCHMAIL_PATH=/usr/bin/fetchmail
 
 RUN apk add --no-cache fetchmail

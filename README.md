@@ -11,7 +11,7 @@ the `docker-mailserver`. The configuration is managed by `mailserver-admin`, the
 
 - `REDIS_URL`: The URL of the Redis server. Default is `redis://localhost:6379`.
 - `TEMP_DIR`: The directory used for temporary files. Default is `/run/fetchmailmgr`.
-- `MTA_HOST`: The hostname of the Mail Transfer Agent (MTA). Default is `mta`.
+- `FETCHMAIL_SMTP_ADDRESS`: The SMTP address for mail delivery. Accepts host:port or just host. This variable is required.
 - `FETCHMAIL_PATH`: The path to the `fetchmail` executable. Default is `/usr/bin/fetchmail`.
 
 ### Command Line Options
