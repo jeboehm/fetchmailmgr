@@ -5,7 +5,7 @@
   "type": "module",
   "dependencies": {
     "commander": "^13.1.0",
-    "fastify": "^5.2.2",
+    "fastify": "^5.7.3",
     "redis": "^4.7.0"
   },
   "scripts": {
