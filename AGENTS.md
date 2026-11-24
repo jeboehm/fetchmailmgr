@@ -25,7 +25,7 @@ User documentation of all three projects lives in `jeboehm/docker-mailserver/doc
 
 ## Ground rules
 
-- Conventional commits (`feat:`, `fix:`, `docs:`, `chore:` …; `!`/`BREAKING CHANGE` for breaking changes). Merging to `main` creates the release automatically from them (`create-release.yml`), so choose the type deliberately (a `docs:` or `chore:` commit alone does not trigger a release).
+- Conventional commits (`feat:`, `fix:`, `docs:`, `chore:` …; `!`/`BREAKING CHANGE` for breaking changes). `create-release.yml` derives the next release from them once a day (or on manual dispatch), so choose the type deliberately (a `docs:` or `chore:` commit alone does not trigger a release).
 - Never push to `main`; open a PR. Merge, tag and release only after the owner approved.
 - Account passwords exist only in Redis and in the per-account `.fetchmailrc` (mode `0600`) in `TEMP_DIR`; do not log or persist them elsewhere.
 - ESM only: relative imports need the `.js` extension; `standard` style (no semicolons, 2 spaces).
@@ -74,7 +74,7 @@ Defined in `src/env.js`; the container defaults are set in `Dockerfile`.
 
 - `.github/workflows/test.yml` (PRs): lint and tests on Node 22, plus a Compose stack health check.
 - `.github/workflows/build-multiarch.yml` (push to `main`/`next`, `v*` tags): multi-arch image to `ghcr.io/jeboehm/fetchmailmgr`, signed with cosign.
-- `.github/workflows/create-release.yml` (push to `main`): conventional-changelog determines version and creates the GitHub release.
+- `.github/workflows/create-release.yml` (daily `schedule` at 01:37 UTC, `workflow_dispatch`): conventional-changelog determines the version from the commits since the last tag and creates the GitHub release; a day without releasable commits is skipped, a manual dispatch forces a release. The tag is pushed with `GH_RELEASE_PAT` so that it triggers `build-multiarch.yml`.
 - `.github/workflows/renovate.yml`: validates `renovate.json` on PRs.
 
 ## Agent skills
