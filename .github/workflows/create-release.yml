@@ -1,14 +1,19 @@
 name: Create Release
 on:
-  push:
-    branches:
-      - main
+  schedule:
+    # At most one release a day, like docker-mailserver and mailserver-admin.
+    # Off the full hour, because GitHub may delay or drop scheduled runs at the
+    # start of an hour.
+    - cron: "37 1 * * *"
+  workflow_dispatch:
 concurrency:
-  group: "release-${{ github.ref }}"
+  group: "${{ github.workflow }}-${{ github.ref }}"
   cancel-in-progress: true
 jobs:
   create_release:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
@@ -18,7 +23,7 @@ jobs:
         uses: TriPSs/conventional-changelog-action@91be4f3188da74fe85de9caffcebc80b26d43b5b # v6
         with:
           github-token: ${{ secrets.GH_RELEASE_PAT }}
-          skip-on-empty: true
+          skip-on-empty: ${{ github.event_name != 'workflow_dispatch' }}
           git-push: false
           skip-git-pull: true
           skip-version-file: true
